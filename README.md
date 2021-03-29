@@ -1,4 +1,6 @@
-# hephaestus2
+<<<<<<< HEAD
+# hephaestus
+AI Art Gallery
 
 ## Project setup
 ```
@@ -22,3 +24,7 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+=======
+# hephaestus
+AI Art Gallery
+>>>>>>> Create README.md
