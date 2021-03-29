@@ -1,5 +1,5 @@
 <<<<<<< HEAD
-# hephaestus
+# hephaestus2
 AI Art Gallery
 
 ## Project setup
@@ -27,4 +27,3 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 =======
 # hephaestus
 AI Art Gallery
->>>>>>> Create README.md
