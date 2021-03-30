@@ -1,0 +1,83 @@
+@import 'vars.scss';
+
+h2 {
+  font-family: 'Areplos Book Pro', serif;
+  font-size: 26px;
+  line-height: 29px;
+}
+
+// Fonts
+@font-face {
+  font-family: 'Areplos Book Pro';
+  src: url('./assets/fonts/AreplosBookPro.woff2') format('woff2'),
+  url('./assets/fonts/AreplosBookPro.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+// Static
+
+.noise{
+  left: 0;
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  height: 100vh;
+  width: 100vw;
+  z-index: 10000;
+}
+.noise:after{
+  animation: grain 8s steps(10) infinite;
+  background-image: url('./assets/img/noise.jpg');
+  content: "";
+  height: 300%;
+  left: -50%;
+  opacity: .025;
+  position: fixed;
+  top: -110%;
+  width: 300%;
+}
+
+@keyframes grain{
+  0%,to{
+    -webkit-transform:translate(0);
+    transform:translate(0)
+  }
+  10%{
+    -webkit-transform:translate(-5%,-10%);
+    transform:translate(-5%,-10%)
+  }
+  20%{
+    -webkit-transform:translate(-15%,5%);
+    transform:translate(-15%,5%)
+  }
+  30%{
+    -webkit-transform:translate(7%,-25%);
+    transform:translate(7%,-25%)
+  }
+  40%{
+    -webkit-transform:translate(-5%,25%);
+    transform:translate(-5%,25%)
+  }
+  50%{
+    -webkit-transform:translate(-15%,10%);
+    transform:translate(-15%,10%)
+  }
+  60%{
+    -webkit-transform:translate(15%);
+    transform:translate(15%)
+  }
+  70%{
+    -webkit-transform:translateY(15%);
+    transform:translateY(15%)
+  }
+  80%{
+    -webkit-transform:translate(3%,35%);
+    transform:translate(3%,35%)
+  }
+  90%{
+    -webkit-transform:translate(-10%,10%);
+    transform:translate(-10%,10%)
+  }
+}

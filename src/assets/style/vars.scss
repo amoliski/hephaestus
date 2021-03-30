@@ -1,0 +1,46 @@
+
+$colors: (
+  'primary': #B28A5A,
+  'secondary': #C7C5B9,
+  'tertiary': #737E68,
+  'accent': #FC532E,
+  'olive': #3E3A2E,
+  'olive_dark': #373328,
+  'turquoise': #25302D,
+  'turquoise_dark': #1F2826,
+  'navy': #1C282F,
+  'navy_dark': #1A262D,
+  'dark': #1B1911,
+  'dark_dark': #171711,
+);
+
+// Colors
+$primary: map-get($colors, 'primary');
+$secondary: map-get($colors, 'secondary');
+$tertiary: map-get($colors, 'tertiary');
+$accent: map-get($colors, 'accent');
+$olive: map-get($colors, 'olive');
+$olive_dark: map-get($colors, 'olive_dark');
+$turquoise: map-get($colors, 'turquoise');
+$turquoise_dark: map-get($colors, 'turquoise_dark');
+$navy: map-get($colors, 'navy');
+$navy_dark: map-get($colors, 'navy_dark');
+$dark: map-get($colors, 'dark');
+$dark_dark: map-get($colors, 'dark_dark');
+$transparent: transparent;
+
+$areplos: 'Areplos Book Pro', serif;
+
+
+@each $name, $color in $colors {
+
+  .#{$name} {
+    background: $color;
+  }
+  .#{$name}_fg {
+    color: $color;
+  }
+  :export {
+    #{$name}: #{$color}
+  }
+}
