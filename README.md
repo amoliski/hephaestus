@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # hephaestus2
 AI Art Gallery
 
