@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :style="{transform: (direction === 'left') ? 'rotate(180deg)' : 'rotate(0)'}">
     <svg width="17" height="8" viewBox="0 0 17 8" fill="none" xmlns="http://www.w3.org/2000/svg">
       <!-- eslint-disable-next-line -->
       <path d="M16.5392 4.48032C16.7345 4.28506 16.7345 3.96848 16.5392 3.77322L13.3572
@@ -22,6 +22,10 @@
       color: {
         type: String,
         default: 'accent',
+      },
+      direction: {
+        type: String,
+        default: 'right',
       },
     },
     computed: {

@@ -30,7 +30,7 @@ const routes = [
     component: Colors,
   },
   {
-    path: '/index',
+    path: '/navigation',
     name: 'Navigation',
     component: Navigation,
   },

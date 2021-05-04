@@ -58,13 +58,16 @@
     .loading_text{
       font-family: $areplos;
       text-align: end;
-      width: 500px;
+      max-width: 500px;
+      width: 100vw;
+      padding: 0 50px;
+      box-sizing: border-box;
     }
 
     .loading_image{
       width: 200px;
       height: 105px;
-      margin-bottom: 25px;
+      margin-bottom: 50px;
       .stack {
         height: 200px;
         width: 200px;

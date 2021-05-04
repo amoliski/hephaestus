@@ -1,4 +1,15 @@
 @import 'vars.scss';
+html {
+  overflow: hidden;
+  width: 100%;
+}
+
+body {
+  height: 100%;
+  position: fixed;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+}
 
 h2 {
   font-family: 'Areplos Book Pro', serif;

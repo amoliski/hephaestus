@@ -1,4 +1,7 @@
 module.exports = {
+  pwa: {
+    themeColor: '#B28A5A',
+  },
   configureWebpack: {
     devServer: {
       sockHost: '0.0.0.0',

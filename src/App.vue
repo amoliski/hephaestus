@@ -2,9 +2,11 @@
   <div class="noise"></div>
   <loading :loading="loading" :progress="loading_progress"
            v-on:click="loading = false;"></loading>
-  <transition name="slide">
-    <router-view/>
-  </transition>
+  <router-view v-slot="{ Component }">
+    <transition name="slide">
+      <component :is="Component" />
+    </transition>
+  </router-view>
 </template>
 
 <script>
@@ -45,7 +47,7 @@
 body {
   padding: 0;
   margin: 0;
-  height: 100vh;
+  height: 100%;
   width: 100%;
   overflow: hidden;
 }
@@ -55,6 +57,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: $primary;
+  height: 100%;
 }
 
 </style>
