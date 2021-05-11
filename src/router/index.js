@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/Home.vue';
 import Colors from '../views/Colors.vue';
 import Navigation from '../views/Navigation.vue';
+import Entry from '../views/Entry.vue';
 
 const routes = [
   {
@@ -33,6 +34,11 @@ const routes = [
     path: '/navigation',
     name: 'Navigation',
     component: Navigation,
+  },
+  {
+    path: '/entry/:entry_name',
+    name: 'Entry',
+    component: Entry,
   },
   {
     path: '/about',

@@ -1,5 +1,5 @@
 <template>
-  <div class="__home_content__">
+  <div class="__home_content__" :class="{transition_out: transition_out}">
     <div class="top">
       <nav_bar></nav_bar>
     </div>
@@ -13,17 +13,17 @@
           <span class="col">Collection</span>
         </div>
         <div class="blurb">
-          A gallery of <span class="underline">artifically generated</span> paintings <br>
+          A gallery of <span class="underline">artificially generated</span> paintings <br>
           and prose. Discover beauty in binary.
         </div>
-        <rounded-button to='navigation' color="turquoise" border="transparent" background="primary">
+        <rounded-button to='navigation' color="turquoise" border="transparent"
+                        :delay="1000" v-on:click="transition_out = true"
+                        background="primary">
           Enter the Collection
           <arrow color="turquoise"></arrow>
         </rounded-button>
       </div>
-      <div class="image">
-        <img src="/img/5 2.png" alt="" />
-      </div>
+      <div class="image"></div>
     </div>
     <div class="nav">
       <div class="nav_buttons">
@@ -61,6 +61,11 @@
       arrow,
       nav_bar,
     },
+    data() {
+      return {
+        transition_out: false,
+      };
+    },
   };
 </script>
 
@@ -71,6 +76,16 @@
     grid-template-rows: 20px 1fr 85px;
     height: 100vh;
     width: 100%;
+    &.transition_out{
+      .text{
+        opacity: 0;
+      }
+      .image {
+        transform: scale(0.835) translateX(calc(-25vw - 61px)) translateY(-47px);
+        border-color: $primary;
+      }
+
+    }
     .main {
       display: flex;
       align-items: center;
@@ -79,11 +94,16 @@
     }
     .image{
       transform: translateX(-30px);
-      img {
-        width: 600px;
-        height:600px;
-        border-radius: 100%;
-      }
+      border: 12px solid transparent;
+      transition: transform .25s;
+      width: 600px;
+      height:600px;
+      border-radius: 100%;
+      background-clip: padding-box;
+      aspect-ratio: 1 / 1;
+      background-size: cover;
+      background-color: transparent;
+      background-image: url('/img/5%202.png');
     }
     .text{
       max-width: 100vw;
@@ -91,6 +111,7 @@
       text-overflow: ellipsis;
       font-family: $areplos;
       z-index: 10;
+      transition: opacity 1s;
       transform: translateX(20px);
       .the{
         font-size: 25px;

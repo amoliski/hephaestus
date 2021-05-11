@@ -1,9 +1,8 @@
 <template>
-  <router-link :to="to" class="rounded-button"
-    :style = "{borderColor: border_color, color: text_color, backgroundColor: background_color}"
-  >
+  <button v-on:click="click" class="rounded-button"
+       :style = "{borderColor: border_color, color: text_color, backgroundColor: background_color}">
     <slot/>
-  </router-link>
+  </button>
 </template>
 
 <script>
@@ -13,7 +12,11 @@
     name: 'RoundedButton',
     props: {
       to: {
-        required: true,
+        required: false,
+      },
+      delay: {
+        required: false,
+        default: 0,
       },
       color: {
         type: String,
@@ -39,11 +42,23 @@
         return variables[this.border];
       },
     },
+    methods: {
+      click() {
+        if (this.to) {
+          setTimeout(() => {
+            this.$router.push(this.to);
+          }, this.delay);
+        }
+      },
+    },
   };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+  @import "../assets/style/vars.scss";
   .rounded-button{
+    cursor: pointer;
+    box-sizing: content-box;
     width: 240px;
     color: $secondary;
     display: inline-flex;

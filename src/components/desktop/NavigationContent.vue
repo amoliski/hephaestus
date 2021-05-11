@@ -1,5 +1,16 @@
 <template>
-  <div class="__navigation_content__">
+  <div class="__navigation_content__" :class="{ animating: animating }">
+    <div class="indicators" style="position: absolute">
+      <div ref="selected_entry" style="position: absolute; opacity: 0;">
+        <button class="entry" v-if="selected"
+                :class="{active: selected.show_title}">
+          <div class="image" :style="
+              { backgroundColor: 'transparent', backgroundImage: 'url(\''+selected.src+'\')' }
+             "></div>
+          <div class="title">{{selected.title}}</div>
+        </button>
+      </div>
+    </div>
     <div class="indicators" style="position: absolute">
       <div class="indicator" ref="ind1"
            style="height: 100vh; top: 0; left: 0; position:absolute;
@@ -13,17 +24,18 @@
     <div class="top">
       <nav_bar></nav_bar>
     </div>
-    <div class="main">
+    <div class="main" :style="{opacity: animating ? 0 : 1}">
        <div class="scroll_content" ref="scrollContent">
          <div class="spacer"></div>
-         <div class="entry" :ref="'entry_'+entry.id"
+         <button class="entry" :ref="entry.ref"
+                 v-on:click="select(entry)" v-on:focus="focused(entry)"
               v-for="entry in entries" :key="entry.id"
               :class="{active: entry.show_title}">
            <div class="image" :style="
             { backgroundColor: 'transparent', backgroundImage: 'url(\''+entry.src+'\')' }
            "></div>
            <div class="title">{{entry.title}}</div>
-         </div>
+         </button>
          <div class="spacer"></div>
        </div>
       <div class="buttons">
@@ -40,9 +52,7 @@
         </div>
       </div>
     </div>
-    <!--div class="controls">
-    </div-->
-    <div class="nav">
+    <div class="nav" :style="{opacity: animating ? 0 : 1}">
       <div class="nav_buttons">
         <router-link to="about_project">
           About this project
@@ -67,7 +77,7 @@
 </template>
 
 <script>
-  /* eslint-disable object-curly-newline */
+  /* eslint-disable object-curly-newline, max-len */
   import arrow from '@/components/Arrow.vue';
   import nav_bar from '@/components/Nav.vue';
   import HorizontalScroll from '@oberon-amsterdam/horizontal';
@@ -77,6 +87,22 @@
     components: {
       arrow,
       nav_bar,
+    },
+    data() {
+      return {
+        animating: false,
+        selected: null,
+        last_left: null,
+        hs: null,
+        entries: [
+          { id: 1, src: '/img/5%202.png', title: 'Reflection', show_title: true, ref: 'entry_1' },
+          { id: 2, src: '/img/entries/abstract/A-1.jpeg', title: 'Abstract', show_title: false, ref: 'entry_2' },
+          { id: 3, src: '/img/entries/blue_hill/BH-1.jpeg', title: 'Blue Hill', show_title: false, ref: 'entry_3' },
+          { id: 4, src: '/img/entries/cinca/StyleGAN2-pbaylies-fork (42).jpeg', title: 'Cinca', show_title: false, ref: 'entry_4' },
+          { id: 5, src: '/img/entries/lynch/DL-1.jpeg', title: 'Lynch', show_title: false, ref: 'entry_5' },
+          { id: 6, src: '/img/entries/red_lady/RL-1.jpeg', title: 'Red Lady', show_title: false, ref: 'entry_6' },
+        ],
+      };
     },
     mounted() {
       const container = this.$refs.scrollContent;
@@ -90,6 +116,54 @@
       }
     },
     methods: {
+      select(entry) {
+        const el = this.$refs[`entry_${entry.id}`];
+        this.selected = entry;
+
+        const scrollContent = this.$refs.scrollContent;
+        this.last_left = scrollContent.scrollLeft;
+
+        // Start loading image
+        const img = new Image();
+        img.src = `/img/sequences/${entry.title.toLowerCase()}.jpg`;
+
+        this.wait_for_scroll(() => {
+          this.animating = true;
+          const selected_entry = this.$refs.selected_entry;
+          selected_entry.style.top = `${el.getBoundingClientRect().top}px`;
+          const left = el.getBoundingClientRect().left;
+          selected_entry.style.left = `${left}px`;
+          selected_entry.style.opacity = '1';
+          setTimeout(() => {
+            console.log(`/entry/${entry.title}`);
+            this.$router.push(`/entry/${entry.title}`);
+          }, 1000);
+        });
+      },
+      wait_for_scroll(callback) {
+        setTimeout(() => {
+          const scrollContent = this.$refs.scrollContent;
+          console.log(scrollContent.scrollLeft, this.last_left);
+          if (this.last_left === scrollContent.scrollLeft) {
+            callback();
+          } else {
+            this.last_left = scrollContent.scrollLeft;
+            this.wait_for_scroll(callback);
+          }
+        }, 150);
+      },
+      focused(entry) {
+        const el = this.$refs[`entry_${entry.id}`];
+        this.center_entry(el);
+      },
+      center_entry(el) {
+        const entry_rect = el.getBoundingClientRect();
+        const scrollContent = this.$refs.scrollContent;
+        const padding = scrollContent.children[0].getBoundingClientRect().width;
+        const abs_left = scrollContent.scrollLeft + entry_rect.left;
+        const opts = { left: abs_left - padding, behavior: 'smooth' };
+        scrollContent.scrollTo(opts);
+      },
       next_item() {
         const entry = this.$refs.entry_1;
         const entry_width = entry.getBoundingClientRect().width;
@@ -103,14 +177,7 @@
         scrollContent.scrollTo({ left: scrollContent.scrollLeft - entry_width, behavior: 'smooth' });
       },
       handle_scroll() {
-        // const x = event.target.scrollLeft;
-        // const entry = this.$refs.entry_1;
-        // const scrollContent = this.$refs.scrollContent;
-        // const entry_width = entry.getBoundingClientRect().width;
-        // const padding = scrollContent.children[0].getBoundingClientRect().width;
         const screen_width = window.innerWidth;
-
-        // const dist = padding + (i * entry_width) - (screen_width / 5);
         const start = screen_width / 4;
         const end = start * 3;
         this.$refs.ind1.style.left = `${start}px`;
@@ -127,19 +194,6 @@
         });
       },
     },
-    data() {
-      return {
-        hs: null,
-        entries: [
-          { id: 1, src: '/img/5%202.png', title: 'Reflection', show_title: true, ref: null },
-          { id: 2, src: '/img/entries/abstract/A-1.jpeg', title: 'Abstract', show_title: false, ref: null },
-          { id: 3, src: '/img/entries/blue_hill/BH-1.jpeg', title: 'Blue Hill', show_title: false, ref: null },
-          { id: 4, src: '/img/entries/cinca/StyleGAN2-pbaylies-fork (42).jpeg', title: 'Cinca', show_title: false, ref: null },
-          { id: 5, src: '/img/entries/lynch/DL-1.jpeg', title: 'Lynch', show_title: false, ref: null },
-          { id: 6, src: '/img/entries/red_lady/RL-1.jpeg', title: 'Red Lady', show_title: false, ref: null },
-        ],
-      };
-    },
   };
 </script>
 
@@ -147,6 +201,9 @@
   @import "../../assets/style/vars";
 
   .__navigation_content__ {
+    &.animating {
+      pointer-events: none;
+    }
     user-select: none;
     display: grid;
     grid-template-rows: 20px 1fr 85px/* 50px  */;
@@ -162,6 +219,7 @@
       align-items: center;
       height: 100%;
       position:relative;
+      transition: opacity 0.5s ease;
       .scroll_content{
         overflow-y: hidden;
       }
@@ -187,71 +245,74 @@
       }
       .spacer{
         height: 100px;
-        width: calc(50vw - 250px - 50px);
+        width: calc(50vw - 250px - 66px);
         @media screen and (max-width: 1240px) {
-          width: calc(50vw - 150px - 500px);
-          min-width: calc(50vw - 160px);
+          width: calc(50vw - ((310px + 60px) / 2) - 1px);
+          /*min-width: calc(50vw - 160px);*/
         }
 
         flex-shrink: 0;
       }
-      .entry{
-        display: flex;
-        flex-shrink: 0;
-        flex-direction: column;
-        align-items: center;
-        cursor: pointer;
-        transition: width 0.5s ease;
-        -webkit-tap-highlight-color:  rgba(255, 255, 255, 0);
-        .image {
-          width: 500px;
-          @media screen and (max-width: 1240px) {
-            width: 300px;
-          }
-          max-height: calc(100vh - 20px - 85px);
-          margin-left: 50px;
-          margin-right: 50px;
-          @media screen and (max-width: 1240px) {
-            margin-left: 25px;
-            margin-right: 25px;
-          }
-          aspect-ratio: 1 / 1;
-          background-size: cover;
-          border-radius: 100%;
-          border: 10px solid transparent;
-          @media screen and (max-width: 1240px) {
-            border: 5px solid transparent;
-          }
-          transition: border .2s ease;
-          background-clip: padding-box;
+    }
+
+    .entry{
+      display: flex;
+      background: transparent;
+      border: none;
+      flex-shrink: 0;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      transition: width 0.5s ease, opacity 0.5s ease;
+      -webkit-tap-highlight-color:  rgba(255, 255, 255, 0);
+      .image {
+        width: 500px;
+        @media screen and (max-width: 1240px) {
+          width: 300px;
         }
-        &.active, &:hover{
-          .image {
-            border-color: $primary;
-          }
-          .title {
-            opacity: 1;
-          }
+        max-height: calc(100vh - 20px - 85px);
+        margin-left: 50px;
+        margin-right: 50px;
+        @media screen and (max-width: 1240px) {
+          margin-left: 25px;
+          margin-right: 25px;
+        }
+        aspect-ratio: 1 / 1;
+        background-size: cover;
+        border-radius: 100%;
+        border: 10px solid transparent;
+        @media screen and (max-width: 1240px) {
+          border: 5px solid transparent;
+        }
+        transition: border .2s ease;
+        background-clip: padding-box;
+      }
+      &.active, &:hover{
+        .image {
+          border-color: $primary;
         }
         .title {
-          opacity: 0;
-          color: $secondary;
-          transition: opacity .5s;
-          margin-top: 1em;
-          font-family: $areplos;
-          font-size: 26px;
-          @media screen and (max-width: 1240px) {
-            font-size: 18px;
-          }
-          font-style: normal;
-          font-weight: 400;
-          line-height: 29px;
-          letter-spacing: 0.02em;
-          text-align: center;
+          opacity: 1;
+        }
+      }
+      .title {
+        opacity: 0;
+        color: $secondary;
+        transition: opacity .5s;
+        margin-top: 1em;
+        font-family: $areplos;
+        font-size: 26px;
+        @media screen and (max-width: 1240px) {
+          font-size: 18px;
+        }
+        font-style: normal;
+        font-weight: 400;
+        line-height: 29px;
+        letter-spacing: 0.02em;
+        text-align: center;
 
-          .active & {
-            opacity: 1;
-          }
+        .active & {
+          opacity: 1;
         }
       }
     }
